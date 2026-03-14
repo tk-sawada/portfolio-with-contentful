@@ -9,7 +9,7 @@ export default async function BiographyPage() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-zinc-950">
-      <header className="px-8 pt-20 pb-16 sm:px-12 lg:px-16">
+      <header className="px-8 pt-10 pb-16 sm:px-12 lg:px-16">
         <p className="text-[9px] font-medium uppercase tracking-[0.5em] text-zinc-400 dark:text-zinc-600">
           Biography
         </p>

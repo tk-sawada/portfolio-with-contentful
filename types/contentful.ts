@@ -4,8 +4,9 @@ export type WorksSkeleton = {
   contentTypeId: "works";
   fields: {
     title: EntryFieldTypes.Symbol;
-    date: EntryFieldTypes.Date;
-    photos: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
+    slug: EntryFieldTypes.Symbol;
+    date?: EntryFieldTypes.Date;
+    photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
   };
 };
 
@@ -23,7 +24,7 @@ export type NewsSkeleton = {
     registrationDate: EntryFieldTypes.Date;
     newsTitle: EntryFieldTypes.Symbol;
     content: EntryFieldTypes.RichText;
-    url: EntryFieldTypes.Symbol;
+    url?: EntryFieldTypes.Symbol;
   };
 };
 
