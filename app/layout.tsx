@@ -1,7 +1,12 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import NavLinks from "./components/nav-links";
+import HeaderName from "./components/header-name";
+import { contentfulClient } from "@/lib/contentful";
+import { getArtistName } from "@/lib/meta";
+import type { AboutSkeleton } from "@/types/contentful";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,28 +19,67 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Photography Portfolio",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const name = await getArtistName();
+  return {
+    title: {
+      default: name,
+      template: `%s | ${name}`,
+    },
+    description: "Photography Portfolio",
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    openGraph: {
+      siteName: name,
+      type: "website",
+      locale: "ja_JP",
+    },
+    twitter: {
+      card: "summary_large_image",
+    },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
+  const [jaRes, enRes] = await Promise.all([
+    contentfulClient.getEntries<AboutSkeleton>({
+      content_type: "about",
+      limit: 1,
+      locale: "ja-JP",
+    }),
+    contentfulClient.getEntries<AboutSkeleton>({
+      content_type: "about",
+      limit: 1,
+      locale: "en-US",
+    }),
+  ]);
+
+  const jaAbout = jaRes.items[0];
+  const enAbout = enRes.items[0];
+  const color = jaAbout?.fields.color ?? "#a1a1aa";
+  const jaName = jaAbout?.fields.name ?? "";
+  const enName = enAbout?.fields.name ?? "";
+
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-dvh bg-white antialiased dark:bg-zinc-950`}
       >
         <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
-          <div className="flex items-center justify-between px-8 py-5 sm:px-12 lg:px-20">
+          <div className="flex flex-col gap-3 px-8 py-4 sm:flex-row sm:items-center sm:justify-between sm:py-5 sm:px-12 lg:px-16">
             <Link
               href="/"
-              className="text-[9px] font-medium uppercase tracking-[0.5em] text-zinc-400 transition-colors hover:text-zinc-700 dark:text-zinc-600 dark:hover:text-zinc-400"
+              className="flex items-center gap-3 transition-opacity hover:opacity-60"
+              aria-label="Home"
             >
-              Portfolio
+              <div
+                className="h-4 w-4 shrink-0"
+                style={{ backgroundColor: color }}
+              />
+              <HeaderName jaName={jaName} enName={enName} />
             </Link>
             <NavLinks />
           </div>

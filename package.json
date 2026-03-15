@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "pnpm test && pnpm test:e2e",
+    "perf": "node scripts/perf.mjs",
+    "perf:psi": "node scripts/perf.mjs --psi"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^16.1.6",
@@ -17,12 +24,21 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "chrome-launcher": "^1.2.1",
+    "eslint": "^9.39.4",
     "eslint-config-next": "16.1.6",
+    "flatted": "^3.4.1",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "lighthouse": "^13.0.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

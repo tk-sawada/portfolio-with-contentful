@@ -28,6 +28,17 @@ export type NewsSkeleton = {
   };
 };
 
+export type AboutSkeleton = {
+  contentTypeId: "about";
+  fields: {
+    name: EntryFieldTypes.Symbol;
+    instagram?: EntryFieldTypes.Symbol;
+    color?: EntryFieldTypes.Symbol;
+    description?: EntryFieldTypes.Symbol;
+  };
+};
+
 export type WorksEntry = Entry<WorksSkeleton>;
 export type BiographyEntry = Entry<BiographySkeleton>;
 export type NewsEntry = Entry<NewsSkeleton>;
+export type AboutEntry = Entry<AboutSkeleton>;

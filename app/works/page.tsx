@@ -1,7 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { contentfulClient } from "@/lib/contentful";
+import { getArtistName, toOgImage } from "@/lib/meta";
 import type { WorksSkeleton } from "@/types/contentful";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [worksRes, artistName] = await Promise.all([
+    contentfulClient.withoutUnresolvableLinks.getEntries<WorksSkeleton>({
+      content_type: "works",
+      order: ["-fields.date"],
+      limit: 1,
+    }),
+    getArtistName(),
+  ]);
+  const coverUrl = (worksRes.items[0]?.fields.photos ?? [])
+    .filter((p): p is NonNullable<typeof p> => p !== undefined)[0]
+    ?.fields.file?.url;
+  return {
+    title: "Works",
+    openGraph: {
+      title: `Works | ${artistName}`,
+      ...(coverUrl ? { images: toOgImage(coverUrl) } : {}),
+    },
+  };
+}
 
 export default async function WorksPage() {
   const entries = await contentfulClient.withoutUnresolvableLinks.getEntries<WorksSkeleton>({
@@ -10,13 +33,12 @@ export default async function WorksPage() {
   });
 
   return (
-    <main className="min-h-screen bg-white dark:bg-zinc-950">
-      <header className="px-8 pt-10 pb-16 sm:px-12 lg:px-16">
-        <p className="text-[9px] font-medium uppercase tracking-[0.5em] text-zinc-400 dark:text-zinc-600">
+    <main className="">
+      <header className="px-8 pt-10 pb-14 sm:px-12 lg:px-16">
+        <h1 className="font-mono text-sm uppercase tracking-[0.3em] text-zinc-400 dark:text-zinc-600">
           Works
-        </p>
+        </h1>
       </header>
-
       <div className="grid grid-cols-1 border-t border-zinc-200 sm:grid-cols-2 dark:border-zinc-800">
         {entries.items.map((entry) => {
           if (!entry.fields.slug) return null;
@@ -62,7 +84,7 @@ export default async function WorksPage() {
                     {`${year}.${month}.${day}`}
                   </p>
                 )}
-                <p className={`text-sm font-medium text-zinc-900 dark:text-zinc-100 ${year ? "mt-3" : ""}`}>
+                <p className={`font-mono text-sm font-light tracking-[0.05em] text-zinc-900 dark:text-zinc-100 ${year ? "mt-3" : ""}`}>
                   {entry.fields.title}
                 </p>
                 {photos.length > 0 && (
