@@ -27,7 +27,13 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${name}`,
     },
     description: "Photography Portfolio",
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(
+      (() => {
+        const u = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+        if (!u) return "http://localhost:3000";
+        return /^https?:\/\//.test(u) ? u : `https://${u}`;
+      })()
+    ),
     openGraph: {
       siteName: name,
       type: "website",
