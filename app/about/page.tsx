@@ -18,7 +18,7 @@ export default async function AboutPage() {
   return (
     <main className="">
       <header className="px-8 pt-10 pb-14 sm:px-12 lg:px-16">
-        <h1 className="font-mono text-sm uppercase tracking-[0.3em] text-zinc-400 dark:text-zinc-600">
+        <h1 className="font-mono text-sm uppercase tracking-[0.3em] text-zinc-500 dark:text-zinc-500">
           About
         </h1>
       </header>
@@ -34,7 +34,7 @@ export default async function AboutPage() {
 
             {/* Description */}
             {about.fields.description && (
-              <p className="mt-3 font-mono text-[10px] tracking-widest text-zinc-400 dark:text-zinc-500">
+              <p className="mt-3 font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-400">
                 {about.fields.description}
               </p>
             )}
@@ -58,7 +58,7 @@ export default async function AboutPage() {
                 {/* Light mode: black logo */}
                 <Image
                   src="/Instagram_Glyph_Black.svg"
-                  alt="Instagram"
+                  alt=""
                   width={18}
                   height={18}
                   className="dark:hidden"
@@ -66,12 +66,12 @@ export default async function AboutPage() {
                 {/* Dark mode: white logo */}
                 <Image
                   src="/Instagram_Glyph_White.svg"
-                  alt="Instagram"
+                  alt=""
                   width={18}
                   height={18}
                   className="hidden dark:block"
                 />
-                <span className="font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-500">
+                <span className="font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-400">
                   @{about.fields.instagram}
                 </span>
               </a>

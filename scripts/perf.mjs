@@ -7,23 +7,36 @@
  *   ※ 事前に `sudo pnpm exec playwright install-deps chromium` が必要
  *
  * 【モード 2】PageSpeed Insights API（本番 URL 向け・Chrome 不要）
- *   node scripts/perf.mjs https://your-domain.com --psi
- *   node scripts/perf.mjs https://your-domain.com --psi --key=YOUR_API_KEY
- *   ※ API キーなしでも動作しますが、レート制限あり（1分1リクエスト程度）
+ *   pnpm perf:psi https://your-domain.com
+ *   pnpm perf:psi https://your-domain.com --detail   # 監査詳細も表示
+ *   ※ API キーは .env.local の GOOGLE_PAGESPEED_INSIGHTS_API_KEY から自動読み込み
  */
 
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 
+// .env.local を読み込んで process.env に追加
+const envPath = join(projectRoot, ".env.local");
+if (existsSync(envPath)) {
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const match = line.match(/^([^#=\s][^=]*)=(.*)$/);
+    if (match) process.env[match[1].trim()] = match[2].trim().replace(/^["']|["']$/g, "");
+  }
+}
+
 // 引数パース
 const args = process.argv.slice(2);
-const baseUrl = args.find((a) => !a.startsWith("--")) ?? process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
-const usePsi   = args.includes("--psi");
-const apiKey   = (args.find((a) => a.startsWith("--key=")) ?? "").replace("--key=", "");
+const baseUrl   = args.find((a) => !a.startsWith("--")) ?? process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+const usePsi    = args.includes("--psi");
+const useDetail = args.includes("--detail");
+// --key=xxx > 環境変数 の優先順位
+const apiKey    = (args.find((a) => a.startsWith("--key=")) ?? "").replace("--key=", "")
+               || process.env.GOOGLE_PAGESPEED_INSIGHTS_API_KEY
+               || "";
 
 const pages = [
   { name: "top",       path: "/" },
@@ -118,20 +131,73 @@ async function runWithPsi(page) {
     throw new Error(`PSI API error ${res.status}: ${body.slice(0, 200)}`);
   }
   const data = await res.json();
-  const cats = data.lighthouseResult?.categories ?? {};
+  const cats   = data.lighthouseResult?.categories ?? {};
+  const audits = data.lighthouseResult?.audits ?? {};
 
-  return {
+  const scores = {
     performance:   Math.round((cats.performance?.score          ?? 0) * 100),
     accessibility: Math.round((cats.accessibility?.score        ?? 0) * 100),
     bestPractices: Math.round((cats["best-practices"]?.score    ?? 0) * 100),
     seo:           Math.round((cats.seo?.score                  ?? 0) * 100),
+    audits,
+    categories: cats,
   };
+
+  return scores;
+}
+
+// ── 詳細表示 ──────────────────────────────────────────────
+function printDetail(categories, audits) {
+  const catOrder = ["performance", "accessibility", "best-practices", "seo"];
+  const catLabel = {
+    performance:     "Performance",
+    accessibility:   "Accessibility",
+    "best-practices": "Best Practices",
+    seo:             "SEO",
+  };
+
+  for (const catId of catOrder) {
+    const cat = categories[catId];
+    if (!cat) continue;
+    const catScore = Math.round((cat.score ?? 0) * 100);
+    console.log(`\n  ── ${catLabel[catId]} ${scoreEmoji(catScore)} ${catScore} ──`);
+
+    // カテゴリに属する監査項目を取得し、スコアが低い順に並べる
+    const auditRefs = cat.auditRefs ?? [];
+    const items = auditRefs
+      .map((ref) => ({ ref, audit: audits[ref.id] }))
+      .filter(({ audit }) => audit && audit.score !== null && audit.score !== undefined && audit.score < 1)
+      .sort((a, b) => (a.audit.score ?? 1) - (b.audit.score ?? 1));
+
+    if (items.length === 0) {
+      console.log("    指摘なし ✓");
+      continue;
+    }
+
+    for (const { audit } of items) {
+      const s = audit.score ?? 0;
+      const emoji = s >= 0.9 ? "🟢" : s >= 0.5 ? "🟡" : "🔴";
+      const scoreStr = audit.scoreDisplayMode === "binary"
+        ? (s === 1 ? "pass" : "fail")
+        : audit.displayValue ?? `${Math.round(s * 100)}`;
+      console.log(`    ${emoji} [${scoreStr}] ${audit.title}`);
+      if (audit.description) {
+        // 説明文の最初の1文のみ（URLや改行を除去して短縮）
+        const desc = audit.description
+          .replace(/\[.*?\]\(.*?\)/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 120);
+        if (desc) console.log(`         ${desc}`);
+      }
+    }
+  }
 }
 
 // ── メイン ────────────────────────────────────────────────
 async function main() {
   const mode = usePsi ? "PageSpeed Insights API" : "Lighthouse";
-  console.log(`\n計測モード: ${mode}`);
+  console.log(`\n計測モード: ${mode}${useDetail && usePsi ? " (詳細モード)" : ""}`);
   console.log(`計測対象:   ${baseUrl}`);
   console.log("=".repeat(60));
 
@@ -158,7 +224,11 @@ async function main() {
       console.log(`  Best Practices ${scoreEmoji(scores.bestPractices)}  ${scores.bestPractices}`);
       console.log(`  SEO            ${scoreEmoji(scores.seo)}  ${scores.seo}`);
 
-      summary.push({ name: page.name, ...scores });
+      if (useDetail && usePsi && scores.categories && scores.audits) {
+        printDetail(scores.categories, scores.audits);
+      }
+
+      summary.push({ name: page.name, performance: scores.performance, accessibility: scores.accessibility, bestPractices: scores.bestPractices, seo: scores.seo });
     } catch (err) {
       console.log("失敗");
       console.log(`  エラー: ${err.message}`);

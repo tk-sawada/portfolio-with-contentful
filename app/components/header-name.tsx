@@ -18,7 +18,7 @@ export default function HeaderName({
 
   if (!name) return null;
   return (
-    <span className="font-mono text-[9px] tracking-[0.3em] text-zinc-400 dark:text-zinc-600">
+    <span className="font-mono text-[9px] tracking-[0.3em] text-zinc-500 dark:text-zinc-500">
       {name}
     </span>
   );

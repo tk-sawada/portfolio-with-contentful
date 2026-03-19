@@ -15,7 +15,7 @@ export default async function BiographyPage() {
   return (
     <main className="">
       <header className="px-8 pt-10 pb-14 sm:px-12 lg:px-16">
-        <h1 className="font-mono text-sm uppercase tracking-[0.3em] text-zinc-400 dark:text-zinc-600">
+        <h1 className="font-mono text-sm uppercase tracking-[0.3em] text-zinc-500 dark:text-zinc-500">
           Biography
         </h1>
       </header>
@@ -28,7 +28,7 @@ export default async function BiographyPage() {
               className="border-b border-r border-zinc-200 px-8 py-12 sm:px-10 lg:px-12 dark:border-zinc-800"
             >
               {/* 日付：補助情報として控えめに */}
-              <p className="font-mono text-[10px] tracking-widest text-zinc-400 dark:text-zinc-500">
+              <p className="font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-400">
                 {`${year}.${month}.${day}`}
               </p>
               {/* 本文：高コントラストで確実に読める */}

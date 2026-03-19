@@ -99,13 +99,13 @@ export default async function WorksDetailPage({
       <header className="px-8 pt-10 pb-16 sm:px-12 lg:px-16">
         <Link
           href="/works"
-          className="font-mono text-[10px] tracking-widest text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-600 dark:hover:text-zinc-300"
+          className="font-mono text-[10px] tracking-widest text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-300"
         >
           ← Works
         </Link>
         <div className="mt-8">
           {year && month && day && (
-            <p className="font-mono text-[10px] tracking-widest text-zinc-400 dark:text-zinc-500">
+            <p className="font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-400">
               {`${year}.${month}.${day}`}
             </p>
           )}
@@ -113,7 +113,7 @@ export default async function WorksDetailPage({
             {entry.fields.title}
           </p>
           {photos.length > 0 && (
-            <p className="mt-2 font-mono text-[10px] tracking-widest text-zinc-400 dark:text-zinc-600">
+            <p className="mt-2 font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-500">
               {photos.length} {photos.length === 1 ? "photo" : "photos"}
             </p>
           )}

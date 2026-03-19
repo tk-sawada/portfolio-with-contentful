@@ -79,7 +79,6 @@ export default async function RootLayout({
             <Link
               href="/"
               className="flex items-center gap-3 transition-opacity hover:opacity-60"
-              aria-label="Home"
             >
               <div
                 className="h-4 w-4 shrink-0"

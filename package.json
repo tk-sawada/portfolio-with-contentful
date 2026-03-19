@@ -13,7 +13,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:all": "pnpm test && pnpm test:e2e",
     "perf": "node scripts/perf.mjs",
-    "perf:psi": "node scripts/perf.mjs --psi"
+    "perf:psi": "node scripts/perf.mjs --psi",
+    "perf:detail": "node scripts/perf.mjs --psi --detail"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^16.1.6",

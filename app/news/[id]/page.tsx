@@ -85,12 +85,12 @@ export default async function NewsDetailPage({
       <header className="px-8 pt-10 pb-16 sm:px-12 lg:px-16">
         <Link
           href="/news"
-          className="font-mono text-[10px] tracking-widest text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-600 dark:hover:text-zinc-300"
+          className="font-mono text-[10px] tracking-widest text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-300"
         >
           ← News
         </Link>
         <div className="mt-8">
-          <p className="font-mono text-[10px] tracking-widest text-zinc-400 dark:text-zinc-500">
+          <p className="font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-400">
             {`${year}.${month}.${day}`}
           </p>
           <p className="mt-3 text-2xl font-mono font-light tracking-[0.05em] text-zinc-900 dark:text-zinc-100">
@@ -110,7 +110,7 @@ export default async function NewsDetailPage({
               href={safeUrl!}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-12 inline-block font-mono text-[10px] tracking-wider text-zinc-400 underline underline-offset-4 transition-colors hover:text-zinc-900 dark:text-zinc-600 dark:hover:text-zinc-300"
+              className="mt-12 inline-block font-mono text-[10px] tracking-wider text-zinc-500 underline underline-offset-4 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-300"
             >
               {hostname} ↗
             </a>

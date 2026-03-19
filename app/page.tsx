@@ -90,7 +90,7 @@ export default async function HomePage() {
           </Link>
           <div className="px-8 py-8 sm:px-10 lg:px-12">
             <Link href="/works">
-              <p className="text-[9px] font-medium uppercase tracking-[0.5em] text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-600 dark:hover:text-zinc-300">
+              <p className="text-[9px] font-medium uppercase tracking-[0.5em] text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-300">
                 Works
               </p>
             </Link>
@@ -109,7 +109,7 @@ export default async function HomePage() {
           <div className="border-b border-r border-zinc-200 dark:border-zinc-800">
             <div className="flex h-full flex-col px-8 py-10 sm:px-10 lg:px-12">
               <Link href="/news">
-                <p className="text-[9px] font-medium uppercase tracking-[0.5em] text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-600 dark:hover:text-zinc-300">
+                <p className="text-[9px] font-medium uppercase tracking-[0.5em] text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-300">
                   News
                 </p>
               </Link>
@@ -120,7 +120,7 @@ export default async function HomePage() {
                     .replace(/-/g, ".");
                   return (
                     <div key={item.sys.id} className="py-6 first:pt-0">
-                      <p className="font-mono text-[10px] tracking-widest text-zinc-400 dark:text-zinc-500">
+                      <p className="font-mono text-[10px] tracking-widest text-zinc-500 dark:text-zinc-400">
                         {date}
                       </p>
                       <Link href={`/news/${item.sys.id}`}>

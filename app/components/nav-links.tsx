@@ -25,7 +25,7 @@ export default function NavLinks() {
                 className={`text-[9px] font-medium uppercase tracking-[0.15em] transition-colors sm:tracking-[0.5em] ${
                   isActive
                     ? "text-zinc-900 dark:text-zinc-100"
-                    : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-600 dark:hover:text-zinc-400"
+                    : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
                 }`}
               >
                 {label}

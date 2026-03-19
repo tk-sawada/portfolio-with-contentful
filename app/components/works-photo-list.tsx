@@ -58,7 +58,7 @@ export default function WorksPhotoList({ photos }: { photos: WorksPhotoData[] })
                   </p>
                 )}
                 {description && (
-                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-500">
+                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                     {description}
                   </p>
                 )}
